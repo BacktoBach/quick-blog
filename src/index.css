@@ -1,0 +1,4 @@
+@import "tailwindcss";
+
+/* BẮT BUỘC phải cấu hình dòng này ở Tailwind v4 để nó hiểu cơ chế chọn selector class .dark */
+@variant dark (&:where(.dark, .dark *));
