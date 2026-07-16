@@ -1,10 +1,106 @@
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { demoAccounts } from '../api/mockApi';
+import { useAuth } from '../context/AuthContext';
+
 export default function Login() {
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const redirectTo = location.state?.from?.pathname || '/my-posts';
+
+  const fillDemo = (account) => {
+    setFormData({ email: account.login, password: account.password });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const { user } = await login(formData);
+      navigate(user.role === 'admin' ? '/admin' : redirectTo, { replace: true });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex min-h-[80vh] items-center justify-center">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Đăng nhập tài khoản</h2>
-        <p className="text-gray-500 text-center text-sm">Thử nghiệm giao diện FE trước API</p>
-      </div>
+    <div className="flex min-h-[70vh] items-center justify-center px-4">
+      <section className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl font-extrabold text-gray-950 dark:text-white">Welcome back</h1>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            Login with a mock account to test user/admin flows.
+          </p>
+        </div>
+
+        <div className="mb-5 grid gap-2 sm:grid-cols-2">
+          {demoAccounts.map((account) => (
+            <button
+              key={account.label}
+              type="button"
+              onClick={() => fillDemo(account)}
+              className="rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300"
+            >
+              Use {account.label}
+            </button>
+          ))}
+        </div>
+
+        {error && (
+          <div className="mb-5 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600 dark:bg-red-950/30 dark:text-red-400">
+            {error}
+          </div>
+        )}
+
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Email or username</span>
+            <input
+              value={formData.email}
+              onChange={(event) => setFormData((prev) => ({ ...prev, email: event.target.value }))}
+              required
+              className="mt-1 w-full rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-800"
+              placeholder="admin@quickblog.dev"
+            />
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</span>
+            <input
+              type="password"
+              value={formData.password}
+              onChange={(event) => setFormData((prev) => ({ ...prev, password: event.target.value }))}
+              required
+              className="mt-1 w-full rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-800"
+              placeholder="admin123"
+            />
+          </label>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-60"
+          >
+            {loading ? 'Signing in...' : 'Sign in'}
+          </button>
+        </form>
+
+        <p className="mt-5 text-center text-sm text-gray-500">
+          No account yet?{' '}
+          <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">
+            Register
+          </Link>
+        </p>
+      </section>
     </div>
   );
 }

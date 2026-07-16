@@ -1,0 +1,6 @@
+<svg width="220" height="56" viewBox="0 0 220 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="4" y="4" width="48" height="48" rx="14" fill="#4F46E5"/>
+  <path d="M16 28C22.6274 28 28 22.6274 28 16C28 22.6274 33.3726 28 40 28C33.3726 28 28 33.3726 28 40C28 33.3726 22.6274 28 16 28Z" fill="white"/>
+  <path d="M16 41H27V30H16V41Z" fill="white" fill-opacity="0.9"/>
+  <text x="64" y="37" fill="#111827" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="800">Quickblog</text>
+</svg>

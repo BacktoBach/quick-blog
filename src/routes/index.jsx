@@ -1,30 +1,60 @@
 import { createBrowserRouter } from 'react-router-dom';
 import MainLayout from '../components/MainLayout';
+import ProtectedRoute from '../components/ProtectedRoute';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
+import Register from '../pages/Register';
 import AdminDashboard from '../pages/AdminDashboard';
+import BlogDetail from '../pages/BlogDetail';
+import CreatePost from '../pages/CreatePost';
+import MyPosts from '../pages/MyPosts';
+import UserManagement from '../pages/UserManagement';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <MainLayout />, // Đưa MainLayout bọc ở ngoài cùng làm khung chung
+    element: <MainLayout />,
     children: [
+      { index: true, element: <Home /> },
+      { path: 'login', element: <Login /> },
+      { path: 'register', element: <Register /> },
+      { path: 'blog/:id', element: <BlogDetail /> },
       {
-        index: true, // Khi vào đường dẫn '/' thì ruột sẽ là trang Home
-        element: <Home />,
+        path: 'my-posts',
+        element: (
+          <ProtectedRoute>
+            <MyPosts />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: 'login', // Lưu ý: làm children thì không cần dấu gạch chéo / ở đầu nữa bồ nhé
-        element: <Login />,
+        path: 'posts/new',
+        element: (
+          <ProtectedRoute>
+            <CreatePost />
+          </ProtectedRoute>
+        ),
       },
       {
         path: 'admin',
-        element: <AdminDashboard />,
+        element: (
+          <ProtectedRoute roles={['admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'admin/users',
+        element: (
+          <ProtectedRoute roles={['admin']}>
+            <UserManagement />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '*',
-        element: <div className="p-10 text-center font-bold text-xl">404 - Không tìm thấy trang bồ ơi! 🔍</div>,
-      }
-    ]
-  }
+        element: <div className="p-10 text-center text-xl font-bold">404 - Page not found</div>,
+      },
+    ],
+  },
 ]);
