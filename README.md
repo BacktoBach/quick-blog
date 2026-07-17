@@ -99,4 +99,4 @@ npm run preview
 - TinyMCE is self-hosted through the `tinymce` package and uses the GPL license mode, so no Tiny Cloud API key is required.
 - The public backend used for the home feed does not include register/login/user-role APIs.
 - Auth, role, ownership, local post creation, and user management are implemented with a mock API stored in `localStorage`.
-- Remote public API posts are shown on the home page. Local mock posts are used for create/delete/ownership flows.
+- Remote public API posts are shown on the home page. Local mock posts are used for create/delete/ownership flows
