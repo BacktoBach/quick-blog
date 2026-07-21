@@ -1,38 +1,60 @@
 # Quick Blog
 
-Mini blog frontend built with React, React Router, Tailwind CSS, TinyMCE, Axios, and Cloudinary upload support.
-
-The app uses the provided public blog API for the home feed and a browser-based mock API for authentication, role-based access, post ownership, and user management. This keeps the frontend flow complete even when the provided backend does not expose user/auth endpoints.
+Mini blog frontend built with React, React Router, Tailwind CSS, TinyMCE, Axios, Cloudinary upload, JWT auth, and role-based access.
 
 ## Features
 
 - Register, login, logout
-- Token and user persistence in `localStorage`
+- JWT token and user persistence in `localStorage`
 - Cross-tab auth sync with the `storage` event
 - Protected routes and role-based redirects
 - User/admin authorization
 - Home page card grid with skeleton loading
 - Search posts by title
 - Create posts with a self-hosted TinyMCE editor
-- Upload cover images to Cloudinary with an unsigned preset
+- Upload cover images directly to Cloudinary
 - Delete posts with confirmation
-- User-only post ownership view
+- User-only post ownership view with `GET /posts?author=<userId>`
 - Admin-only all-posts view
 - Admin-only user management
 - Toggle user/admin role
 - Delete users
 - Dark/light theme with saved preference
 
-## Demo Accounts
+## API
+
+Default API base URL:
 
 ```txt
-Admin
-Email: admin@quickblog.dev
-Password: admin123
+https://api-blog-af3u.onrender.com/api
+```
 
-User
-Email: user@quickblog.dev
-Password: user123
+Auth header:
+
+```txt
+Authorization: Bearer <accessToken>
+```
+
+Main backend routes:
+
+```txt
+POST   /auth/register
+POST   /auth/login
+GET    /auth/me
+GET    /posts
+GET    /posts?author=<userId>
+GET    /posts/:id
+POST   /posts
+DELETE /posts/:id
+GET    /users
+DELETE /users/:id
+PUT    /users/:id/role
+```
+
+Cloudinary upload is handled directly from the frontend:
+
+```txt
+POST https://api.cloudinary.com/v1_1/<cloud_name>/image/upload
 ```
 
 ## Tech Stack
@@ -59,9 +81,10 @@ Create an environment file:
 cp .env.example .env
 ```
 
-Add Cloudinary values:
+Environment values:
 
 ```env
+VITE_API_URL=https://api-blog-af3u.onrender.com/api
 VITE_CLOUDINARY_CLOUD_NAME=your_cloud_name
 VITE_CLOUDINARY_UPLOAD_PRESET=your_unsigned_upload_preset
 ```
@@ -81,9 +104,7 @@ npm run dev
 5. Copy the cloud name and preset name into `.env`.
 6. Restart the dev server after changing `.env`.
 
-When Cloudinary is configured, cover images are uploaded to Cloudinary and the returned `secure_url` is stored with the created post.
-
-If Cloudinary env values are missing, the app falls back to a local preview URL so the create-post flow can still be tested.
+When Cloudinary is configured, cover images are uploaded to Cloudinary and the returned `secure_url` is sent to the posts API.
 
 ## Available Scripts
 
@@ -96,7 +117,5 @@ npm run preview
 
 ## Notes
 
-- TinyMCE is self-hosted through the `tinymce` package and uses the GPL license mode, so no Tiny Cloud API key is required.
-- The public backend used for the home feed does not include register/login/user-role APIs.
-- Auth, role, ownership, local post creation, and user management are implemented with a mock API stored in `localStorage`.
-- Remote public API posts are shown on the home page. Local mock posts are used for create/delete/ownership flows
+- TinyMCE is self-hosted through the `tinymce` package and uses GPL license mode, so no Tiny Cloud API key is required.
+- Logout is handled on the frontend by clearing `accessToken` and `user` from `localStorage`.

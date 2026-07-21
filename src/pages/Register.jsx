@@ -44,7 +44,7 @@ export default function Register() {
           {[
             ['email', 'Email', 'email', 'you@example.com'],
             ['username', 'Username', 'text', 'yourname'],
-            ['password', 'Password', 'password', 'At least 4 characters'],
+            ['password', 'Password', 'password', 'At least 6 characters'],
           ].map(([name, label, type, placeholder]) => (
             <label className="block" key={name}>
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
@@ -54,7 +54,7 @@ export default function Register() {
                 value={formData[name]}
                 onChange={(event) => setFormData((prev) => ({ ...prev, [name]: event.target.value }))}
                 required
-                minLength={name === 'password' ? 4 : undefined}
+                minLength={name === 'password' ? 6 : undefined}
                 className="mt-1 w-full rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-800"
                 placeholder={placeholder}
               />

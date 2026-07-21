@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { deletePost, getVisiblePosts } from '../api/mockApi';
+import { deletePost, getVisiblePosts } from '../api/api';
 import { useAuth } from '../context/AuthContext';
 
 export default function MyPosts() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -12,7 +12,7 @@ export default function MyPosts() {
   const loadPosts = async (showLoading = true) => {
     if (showLoading) setLoading(true);
     try {
-      setPosts(await getVisiblePosts());
+      setPosts(await getVisiblePosts(user));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -23,7 +23,7 @@ export default function MyPosts() {
   useEffect(() => {
     let mounted = true;
 
-    getVisiblePosts()
+    getVisiblePosts(user)
       .then((data) => {
         if (mounted) setPosts(data);
       })
@@ -37,14 +37,14 @@ export default function MyPosts() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [user]);
 
   const handleDelete = async (post) => {
     const ok = window.confirm(`Delete "${post.title}"?`);
     if (!ok) return;
 
     try {
-      await deletePost(post._id);
+      await deletePost(post._id || post.id);
       await loadPosts();
     } catch (err) {
       setError(err.message);
@@ -101,21 +101,16 @@ export function PostTable({ posts, onDelete }) {
                   <Link to={`/blog/${post._id}`} className="hover:text-indigo-600">
                     {post.title}
                   </Link>
-                  {post.remote && <span className="ml-2 text-xs font-normal text-gray-400">(public API)</span>}
                 </td>
                 <td className="px-5 py-4 text-gray-500">{post.author}</td>
                 <td className="px-5 py-4 text-gray-500">{post.category}</td>
                 <td className="px-5 py-4 text-right">
-                  {post.remote ? (
-                    <span className="text-xs text-gray-400">Read-only</span>
-                  ) : (
-                    <button
-                      onClick={() => onDelete(post)}
-                      className="font-semibold text-red-600 hover:text-red-500"
-                    >
-                      Delete
-                    </button>
-                  )}
+                  <button
+                    onClick={() => onDelete(post)}
+                    className="font-semibold text-red-600 hover:text-red-500"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -125,3 +120,4 @@ export function PostTable({ posts, onDelete }) {
     </div>
   );
 }
+

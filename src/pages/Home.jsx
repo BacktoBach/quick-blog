@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getPosts } from '../api/mockApi';
+import { getPosts } from '../api/api';
 
 const categories = ['All', 'Technology', 'Startup', 'Lifestyle', 'Finance'];
 
@@ -144,7 +144,7 @@ export default function Home() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredPosts.map((post) => (
               <article
-                key={post._id}
+                key={post._id || post.id}
                 className="flex overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
               >
                 <div className="flex w-full flex-col">
@@ -167,7 +167,7 @@ export default function Home() {
                       <span className="rounded-full bg-indigo-50 px-2.5 py-1 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
                         {post.category || 'General'}
                       </span>
-                      <span>{post.remote ? 'Public API' : post.author}</span>
+                      <span>{post.author || 'QuickBlog'}</span>
                     </div>
                     <Link to={`/blog/${post._id}`}>
                       <h2 className="text-lg font-bold leading-snug text-gray-950 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">
@@ -193,3 +193,4 @@ export default function Home() {
     </div>
   );
 }
+

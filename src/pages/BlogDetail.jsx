@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getPost } from '../api/mockApi';
+import { getPost } from '../api/api';
 
 export default function BlogDetail() {
   const { id } = useParams();
@@ -56,13 +56,14 @@ export default function BlogDetail() {
         </span>
         <h1 className="text-4xl font-extrabold leading-tight text-gray-950 dark:text-white">{post.title}</h1>
         <p className="text-sm text-gray-500">
-          By {post.author || 'QuickBlog'} · {new Date(post.createdAt).toLocaleDateString('vi-VN')}
+          By {post.author || 'QuickBlog'} - {new Date(post.createdAt).toLocaleDateString('vi-VN')}
         </p>
       </header>
 
       <img
         src={
           post.coverImage ||
+          post.image ||
           'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&auto=format&fit=crop&q=80'
         }
         alt={post.title}
@@ -76,3 +77,4 @@ export default function BlogDetail() {
     </article>
   );
 }
+

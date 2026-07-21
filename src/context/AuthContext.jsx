@@ -1,10 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
-import { loginUser, registerUser } from '../api/mockApi';
+import { getCurrentUser, loginUser, registerUser } from '../api/api';
 
 const AuthContext = createContext(null);
 
-const TOKEN_KEY = 'token';
+const TOKEN_KEY = 'accessToken';
 const USER_KEY = 'user';
 
 function readStoredUser() {
@@ -29,6 +29,8 @@ function reducer(state, action) {
       return { token: null, user: null };
     case 'SYNC':
       return action.payload;
+    case 'UPDATE_USER':
+      return { ...state, user: action.payload };
     default:
       return state;
   }
@@ -49,8 +51,7 @@ export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    const handleStorage = (event) => {
-      if (![TOKEN_KEY, USER_KEY].includes(event.key)) return;
+    const syncAuth = () => {
       dispatch({
         type: 'SYNC',
         payload: {
@@ -60,9 +61,38 @@ export function AuthProvider({ children }) {
       });
     };
 
+    const handleStorage = (event) => {
+      if ([TOKEN_KEY, USER_KEY].includes(event.key)) syncAuth();
+    };
+
     window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
+    window.addEventListener('auth:logout', syncAuth);
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('auth:logout', syncAuth);
+    };
   }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    if (!state.token || state.user) return undefined;
+
+    getCurrentUser()
+      .then((user) => {
+        if (!mounted) return;
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        dispatch({ type: 'UPDATE_USER', payload: user });
+      })
+      .catch(() => {
+        persistAuth({ token: null, user: null });
+        dispatch({ type: 'LOGOUT' });
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, [state.token, state.user]);
 
   const value = useMemo(
     () => ({
@@ -71,12 +101,18 @@ export function AuthProvider({ children }) {
       isAdmin: state.user?.role === 'admin',
       async login(credentials) {
         const payload = await loginUser(credentials);
+        if (!payload.token || !payload.user) {
+          throw new Error('Login response is missing token or user.');
+        }
         persistAuth(payload);
         dispatch({ type: 'LOGIN', payload });
         return payload;
       },
       async register(payload) {
         const auth = await registerUser(payload);
+        if (!auth.token || !auth.user) {
+          throw new Error('Register response is missing token or user.');
+        }
         persistAuth(auth);
         dispatch({ type: 'LOGIN', payload: auth });
         return auth;
@@ -97,3 +133,4 @@ export function useAuth() {
   if (!context) throw new Error('useAuth must be used inside AuthProvider');
   return context;
 }
+

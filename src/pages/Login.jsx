@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { demoAccounts } from '../api/mockApi';
 import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
@@ -12,10 +11,6 @@ export default function Login() {
   const location = useLocation();
 
   const redirectTo = location.state?.from?.pathname || '/my-posts';
-
-  const fillDemo = (account) => {
-    setFormData({ email: account.login, password: account.password });
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -37,22 +32,7 @@ export default function Login() {
       <section className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-extrabold text-gray-950 dark:text-white">Welcome back</h1>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Login with a mock account to test user/admin flows.
-          </p>
-        </div>
-
-        <div className="mb-5 grid gap-2 sm:grid-cols-2">
-          {demoAccounts.map((account) => (
-            <button
-              key={account.label}
-              type="button"
-              onClick={() => fillDemo(account)}
-              className="rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300"
-            >
-              Use {account.label}
-            </button>
-          ))}
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Login with your QuickBlog account.</p>
         </div>
 
         {error && (
@@ -63,13 +43,14 @@ export default function Login() {
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Email or username</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</span>
             <input
+              type="email"
               value={formData.email}
               onChange={(event) => setFormData((prev) => ({ ...prev, email: event.target.value }))}
               required
               className="mt-1 w-full rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-800"
-              placeholder="admin@quickblog.dev"
+              placeholder="you@example.com"
             />
           </label>
 
@@ -81,7 +62,7 @@ export default function Login() {
               onChange={(event) => setFormData((prev) => ({ ...prev, password: event.target.value }))}
               required
               className="mt-1 w-full rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-800"
-              placeholder="admin123"
+              placeholder="Your password"
             />
           </label>
 

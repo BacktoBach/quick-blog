@@ -14,7 +14,7 @@ import 'tinymce/plugins/wordcount';
 import 'tinymce/skins/ui/oxide/skin.min.css';
 import 'tinymce/skins/content/default/content.min.css';
 import 'tinymce/skins/content/default/content.css';
-import { createPost, isCloudinaryConfigured, uploadCoverImage } from '../api/mockApi';
+import { createPost, isCloudinaryConfigured, uploadCoverImage } from '../api/api';
 
 export default function CreatePost() {
   const [formData, setFormData] = useState({
@@ -51,7 +51,7 @@ export default function CreatePost() {
       const coverImage = await uploadCoverImage(coverFile);
       const post = await createPost({ ...formData, coverImage });
       setCoverFile(null);
-      navigate(`/blog/${post._id}`);
+      navigate(`/blog/${post._id || post.id}`);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -132,7 +132,7 @@ export default function CreatePost() {
           />
           {!cloudinaryReady && (
             <span className="mt-2 block text-xs text-gray-500">
-              Add Cloudinary env values to upload files to Cloudinary. Without them, the mock API stores a local preview URL.
+              Add Cloudinary env values before publishing posts with cover images.
             </span>
           )}
         </label>
@@ -169,3 +169,4 @@ export default function CreatePost() {
     </section>
   );
 }
+
