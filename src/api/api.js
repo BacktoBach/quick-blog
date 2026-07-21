@@ -42,17 +42,7 @@ function throwApiError(error, fallback) {
 function unwrapList(payload) {
   if (Array.isArray(payload)) return payload;
   if (Array.isArray(payload?.items)) return payload.items;
-  if (Array.isArray(payload?.data)) return payload.data;
-  if (Array.isArray(payload?.posts)) return payload.posts;
-  if (Array.isArray(payload?.users)) return payload.users;
   return [];
-}
-
-function unwrapItem(payload, keys = []) {
-  for (const key of keys) {
-    if (payload?.[key]) return payload[key];
-  }
-  return payload?.data || payload?.item || payload;
 }
 
 function getId(item) {
@@ -63,75 +53,32 @@ function normalizeUser(user) {
   if (!user) return null;
   return {
     ...user,
-    id: user.id || user._id,
-    username: user.username || user.name || user.email,
+    id: getId(user),
+    username: user.username || user.email,
     role: user.role || 'user',
   };
 }
 
-function getResponseCandidates(payload) {
-  return [payload, payload?.data, payload?.result, payload?.metadata].filter(Boolean);
-}
-
-function findAccessToken(payload) {
-  for (const candidate of getResponseCandidates(payload)) {
-    const token =
-      candidate?.accessToken ||
-      candidate?.access_token ||
-      candidate?.token ||
-      candidate?.jwt ||
-      candidate?.access?.token ||
-      candidate?.tokens?.accessToken ||
-      candidate?.tokens?.access_token ||
-      candidate?.tokens?.token;
-
-    if (token) return token;
-  }
-
-  return null;
-}
-
-function findUser(payload) {
-  for (const candidate of getResponseCandidates(payload)) {
-    const user =
-      candidate?.user ||
-      candidate?.account ||
-      candidate?.profile ||
-      candidate?.currentUser;
-
-    if (user) return normalizeUser(user);
-  }
-
-  return normalizeUser(payload);
-}
-
 function normalizeAuthResponse(payload) {
   return {
-    token: findAccessToken(payload),
-    user: findUser(payload),
+    token: payload.accessToken || payload.token,
+    user: normalizeUser(payload.user),
   };
 }
 
 function normalizePost(post) {
   if (!post) return null;
-  const author = post.author || post.user || post.createdBy || post.authorId;
-  const authorName =
-    typeof author === 'object'
-      ? author.username || author.name || author.email
-      : post.authorName || post.username || 'QuickBlog';
+  const author = normalizeUser(post.author);
 
   return {
     ...post,
-    _id: getId(post),
-    title: post.title || '',
-    content: post.content || post.description || '',
-    category: post.category || post.tags?.[0] || 'General',
-    tags: Array.isArray(post.tags) ? post.tags : post.tags ? [post.tags] : [],
-    coverImage: post.coverImage || post.image || post.thumbnail || '',
-    authorId: typeof author === 'object' ? getId(author) : author || post.authorId,
-    author: authorName,
-    createdAt: post.createdAt || post.date || new Date().toISOString(),
-    views: post.views || 0,
+    _id: post._id,
+    id: getId(post),
+    category: post.tags?.[0] || 'General',
+    tags: post.tags || [],
+    coverImage: post.image,
+    authorId: author?.id,
+    author: author?.username || 'QuickBlog',
   };
 }
 
@@ -156,7 +103,7 @@ export async function loginUser(payload) {
 export async function getCurrentUser() {
   try {
     const { data } = await api.get('/auth/me');
-    return normalizeUser(unwrapItem(data, ['user']));
+    return normalizeUser(data.user);
   } catch (error) {
     throwApiError(error, 'Could not load current user.');
   }
@@ -174,7 +121,7 @@ export async function getPosts(params) {
 export async function getPost(id) {
   try {
     const { data } = await api.get(`/posts/${id}`);
-    return normalizePost(unwrapItem(data, ['post']));
+    return normalizePost(data.post || data);
   } catch (error) {
     throwApiError(error, 'Post not found.');
   }
@@ -201,7 +148,7 @@ export async function createPost(payload) {
       image: payload.coverImage,
       tags: tags.length ? tags : [payload.category].filter(Boolean),
     });
-    return normalizePost(unwrapItem(data, ['post']));
+    return normalizePost(data.post || data);
   } catch (error) {
     throwApiError(error, 'Could not create post.');
   }
@@ -246,7 +193,7 @@ export async function deleteUser(id) {
 export async function updateUserRole(id, role) {
   try {
     const { data } = await api.put(`/users/${id}/role`, { role });
-    return normalizeUser(unwrapItem(data, ['user']));
+    return normalizeUser(data.user || data);
   } catch (error) {
     throwApiError(error, 'Could not update user role.');
   }
