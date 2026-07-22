@@ -1,11 +1,14 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getPosts } from '../api/api';
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { getPosts } from "../services/postService";
 
-const categories = ['All', 'Technology', 'Startup', 'Lifestyle', 'Finance'];
+const categories = ["All", "Technology", "Startup", "Lifestyle", "Finance"];
 
-function stripHtml(html = '') {
-  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+function stripHtml(html = "") {
+  return html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function SkeletonGrid() {
@@ -33,9 +36,9 @@ function SkeletonGrid() {
 export default function Home() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     let mounted = true;
@@ -59,9 +62,11 @@ export default function Home() {
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
       const matchesCategory =
-        selectedCategory === 'All' || post.category?.toLowerCase() === selectedCategory.toLowerCase();
+        selectedCategory === "All" ||
+        post.category?.toLowerCase() === selectedCategory.toLowerCase();
       const matchesSearch =
-        !searchQuery.trim() || post.title?.toLowerCase().includes(searchQuery.trim().toLowerCase());
+        !searchQuery.trim() ||
+        post.title?.toLowerCase().includes(searchQuery.trim().toLowerCase());
 
       return matchesCategory && matchesSearch;
     });
@@ -84,7 +89,8 @@ export default function Home() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-3xl text-sm font-medium leading-7 text-black dark:text-gray-300 sm:text-base">
-          This is your space to think out loud, to share what matters, and try to write without filters.
+          This is your space to think out loud, to share what matters, and try
+          to write without filters.
           <br className="hidden sm:block" />
           Whatever it's one word or a thousand, your story starts right here.
         </p>
@@ -101,7 +107,13 @@ export default function Home() {
             className="m-1 flex h-10 w-10 items-center justify-center rounded-md bg-indigo-600 text-white transition hover:bg-indigo-500"
             aria-label="Search"
           >
-            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg
+              width="21"
+              height="21"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
               <path
                 d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"
                 stroke="currentColor"
@@ -119,8 +131,8 @@ export default function Home() {
               onClick={() => setSelectedCategory(category)}
               className={`rounded-full px-5 py-2 text-sm font-medium transition ${
                 selectedCategory === category
-                  ? 'bg-indigo-600 text-white'
-                  : 'text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-300'
+                  ? "bg-indigo-600 text-white"
+                  : "text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-300"
               }`}
             >
               {category}
@@ -139,7 +151,9 @@ export default function Home() {
         {loading ? (
           <SkeletonGrid />
         ) : filteredPosts.length === 0 ? (
-          <div className="py-16 text-center text-gray-500">No matching posts found.</div>
+          <div className="py-16 text-center text-gray-500">
+            No matching posts found.
+          </div>
         ) : (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredPosts.map((post) => (
@@ -155,7 +169,7 @@ export default function Home() {
                     <img
                       src={
                         post.coverImage ||
-                        'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&auto=format&fit=crop&q=70'
+                        "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&auto=format&fit=crop&q=70"
                       }
                       alt={post.title}
                       className="h-full w-full object-cover transition duration-500 hover:scale-105"
@@ -165,9 +179,9 @@ export default function Home() {
                   <div className="flex flex-1 flex-col p-5">
                     <div className="mb-3 flex items-center justify-between gap-2 text-xs text-gray-500">
                       <span className="rounded-full bg-indigo-50 px-2.5 py-1 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                        {post.category || 'General'}
+                        {post.category || "General"}
                       </span>
-                      <span>{post.author || 'QuickBlog'}</span>
+                      <span>{post.author || "QuickBlog"}</span>
                     </div>
                     <Link to={`/blog/${post._id}`}>
                       <h2 className="text-lg font-bold leading-snug text-gray-950 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">
@@ -193,4 +207,3 @@ export default function Home() {
     </div>
   );
 }
-

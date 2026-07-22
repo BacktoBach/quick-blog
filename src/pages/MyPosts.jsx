@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { deletePost, getVisiblePosts } from '../api/api';
-import { useAuth } from '../context/AuthContext';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { deletePost, getVisiblePosts } from "../services/postService";
+import { useAuth } from "../context/AuthContext";
 
 export default function MyPosts() {
   const { isAdmin, user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const loadPosts = async (showLoading = true) => {
     if (showLoading) setLoading(true);
@@ -56,18 +56,25 @@ export default function MyPosts() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-gray-950 dark:text-white">
-            {isAdmin ? 'All posts' : 'My posts'}
+            {isAdmin ? "All posts" : "My posts"}
           </h1>
           <p className="mt-1 text-sm text-gray-500">
             Users see only their posts. Admin sees all posts.
           </p>
         </div>
-        <Link to="/posts/new" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500">
+        <Link
+          to="/posts/new"
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+        >
           New post
         </Link>
       </div>
 
-      {error && <div className="rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600">{error}</div>}
+      {error && (
+        <div className="rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600">
+          {error}
+        </div>
+      )}
       {loading ? (
         <div className="py-12 text-center text-gray-500">Loading posts...</div>
       ) : (
@@ -79,7 +86,11 @@ export default function MyPosts() {
 
 export function PostTable({ posts, onDelete }) {
   if (!posts.length) {
-    return <div className="rounded-lg border border-dashed border-gray-300 p-10 text-center text-gray-500">No posts yet.</div>;
+    return (
+      <div className="rounded-lg border border-dashed border-gray-300 p-10 text-center text-gray-500">
+        No posts yet.
+      </div>
+    );
   }
 
   return (
@@ -98,7 +109,10 @@ export function PostTable({ posts, onDelete }) {
             {posts.map((post) => (
               <tr key={post._id}>
                 <td className="max-w-sm px-5 py-4 font-semibold text-gray-950 dark:text-white">
-                  <Link to={`/blog/${post._id}`} className="hover:text-indigo-600">
+                  <Link
+                    to={`/blog/${post._id}`}
+                    className="hover:text-indigo-600"
+                  >
                     {post.title}
                   </Link>
                 </td>
@@ -120,4 +134,3 @@ export function PostTable({ posts, onDelete }) {
     </div>
   );
 }
-

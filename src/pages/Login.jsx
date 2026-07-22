@@ -1,25 +1,27 @@
-import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const redirectTo = location.state?.from?.pathname || '/my-posts';
+  const redirectTo = location.state?.from?.pathname || "/my-posts";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
       const { user } = await login(formData);
-      navigate(user.role === 'admin' ? '/admin' : redirectTo, { replace: true });
+      navigate(user.role === "admin" ? "/admin" : redirectTo, {
+        replace: true,
+      });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -31,8 +33,12 @@ export default function Login() {
     <div className="flex min-h-[70vh] items-center justify-center px-4">
       <section className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-extrabold text-gray-950 dark:text-white">Welcome back</h1>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Login with your QuickBlog account.</p>
+          <h1 className="text-3xl font-extrabold text-gray-950 dark:text-white">
+            Welcome back
+          </h1>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            Login with your QuickBlog account.
+          </p>
         </div>
 
         {error && (
@@ -43,11 +49,15 @@ export default function Login() {
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Email</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Email
+            </span>
             <input
               type="email"
               value={formData.email}
-              onChange={(event) => setFormData((prev) => ({ ...prev, email: event.target.value }))}
+              onChange={(event) =>
+                setFormData((prev) => ({ ...prev, email: event.target.value }))
+              }
               required
               className="mt-1 w-full rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-800"
               placeholder="you@example.com"
@@ -55,11 +65,18 @@ export default function Login() {
           </label>
 
           <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Password</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Password
+            </span>
             <input
               type="password"
               value={formData.password}
-              onChange={(event) => setFormData((prev) => ({ ...prev, password: event.target.value }))}
+              onChange={(event) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  password: event.target.value,
+                }))
+              }
               required
               className="mt-1 w-full rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-800"
               placeholder="Your password"
@@ -71,13 +88,16 @@ export default function Login() {
             disabled={loading}
             className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-60"
           >
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 
         <p className="mt-5 text-center text-sm text-gray-500">
-          No account yet?{' '}
-          <Link to="/register" className="font-semibold text-indigo-600 hover:text-indigo-500">
+          No account yet?{" "}
+          <Link
+            to="/register"
+            className="font-semibold text-indigo-600 hover:text-indigo-500"
+          >
             Register
           </Link>
         </p>

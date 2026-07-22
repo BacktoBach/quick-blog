@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { deleteUser, getUsers, updateUserRole } from '../api/api';
+import { useEffect, useState } from "react";
+import { deleteUser, getUsers, updateUserRole } from "../services/userService";
 
 export default function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const loadUsers = async (showLoading = true) => {
     if (showLoading) setLoading(true);
@@ -37,7 +37,7 @@ export default function UserManagement() {
   }, []);
 
   const handleRole = async (user) => {
-    const nextRole = user.role === 'admin' ? 'user' : 'admin';
+    const nextRole = user.role === "admin" ? "user" : "admin";
     try {
       await updateUserRole(user.id || user._id, nextRole);
       await loadUsers();
@@ -47,7 +47,9 @@ export default function UserManagement() {
   };
 
   const handleDelete = async (user) => {
-    const ok = window.confirm(`Delete user "${user.username}" and their posts?`);
+    const ok = window.confirm(
+      `Delete user "${user.username}" and their posts?`,
+    );
     if (!ok) return;
 
     try {
@@ -61,11 +63,19 @@ export default function UserManagement() {
   return (
     <section className="space-y-6 py-8">
       <div>
-        <h1 className="text-3xl font-extrabold text-gray-950 dark:text-white">User Management</h1>
-        <p className="mt-1 text-sm text-gray-500">Admin-only route for role changes and account deletion.</p>
+        <h1 className="text-3xl font-extrabold text-gray-950 dark:text-white">
+          User Management
+        </h1>
+        <p className="mt-1 text-sm text-gray-500">
+          Admin-only route for role changes and account deletion.
+        </p>
       </div>
 
-      {error && <div className="rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600">{error}</div>}
+      {error && (
+        <div className="rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600">
+          {error}
+        </div>
+      )}
 
       {loading ? (
         <div className="py-12 text-center text-gray-500">Loading users...</div>
@@ -83,7 +93,9 @@ export default function UserManagement() {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {users.map((user) => (
                 <tr key={user.id || user._id}>
-                  <td className="px-5 py-4 font-semibold text-gray-950 dark:text-white">{user.username}</td>
+                  <td className="px-5 py-4 font-semibold text-gray-950 dark:text-white">
+                    {user.username}
+                  </td>
                   <td className="px-5 py-4 text-gray-500">{user.email}</td>
                   <td className="px-5 py-4">
                     <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
@@ -91,10 +103,16 @@ export default function UserManagement() {
                     </span>
                   </td>
                   <td className="space-x-4 px-5 py-4 text-right">
-                    <button onClick={() => handleRole(user)} className="font-semibold text-indigo-600 hover:text-indigo-500">
+                    <button
+                      onClick={() => handleRole(user)}
+                      className="font-semibold text-indigo-600 hover:text-indigo-500"
+                    >
                       Toggle role
                     </button>
-                    <button onClick={() => handleDelete(user)} className="font-semibold text-red-600 hover:text-red-500">
+                    <button
+                      onClick={() => handleDelete(user)}
+                      className="font-semibold text-red-600 hover:text-red-500"
+                    >
                       Delete
                     </button>
                   </td>
@@ -107,4 +125,3 @@ export default function UserManagement() {
     </section>
   );
 }
-

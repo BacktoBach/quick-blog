@@ -1,9 +1,14 @@
-function App() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-white">
-      <h1 className="text-3xl font-bold">Quick Blog Project Starter 🚀</h1>
-    </div>
-  )
-}
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes";
+import { AuthProvider } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
-export default App
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </ThemeProvider>
+  );
+}

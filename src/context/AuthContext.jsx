@@ -1,15 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
-import { getCurrentUser, loginUser, registerUser } from '../api/api';
+import { createContext, useContext, useEffect, useMemo, useReducer } from "react";
+import { getCurrentUser, loginUser, registerUser } from "../services/authService";
 
 const AuthContext = createContext(null);
 
-const TOKEN_KEY = 'accessToken';
-const USER_KEY = 'user';
+const TOKEN_KEY = "accessToken";
+const USER_KEY = "user";
 
 function readStoredUser() {
   try {
-    return JSON.parse(localStorage.getItem(USER_KEY) || 'null');
+    return JSON.parse(localStorage.getItem(USER_KEY) || "null");
   } catch {
     localStorage.removeItem(USER_KEY);
     return null;
@@ -23,13 +23,13 @@ const initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'LOGIN':
+    case "LOGIN":
       return { token: action.payload.token, user: action.payload.user };
-    case 'LOGOUT':
+    case "LOGOUT":
       return { token: null, user: null };
-    case 'SYNC':
+    case "SYNC":
       return action.payload;
-    case 'UPDATE_USER':
+    case "UPDATE_USER":
       return { ...state, user: action.payload };
     default:
       return state;
@@ -53,7 +53,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const syncAuth = () => {
       dispatch({
-        type: 'SYNC',
+        type: "SYNC",
         payload: {
           token: localStorage.getItem(TOKEN_KEY),
           user: readStoredUser(),
@@ -65,11 +65,11 @@ export function AuthProvider({ children }) {
       if ([TOKEN_KEY, USER_KEY].includes(event.key)) syncAuth();
     };
 
-    window.addEventListener('storage', handleStorage);
-    window.addEventListener('auth:logout', syncAuth);
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("auth:logout", syncAuth);
     return () => {
-      window.removeEventListener('storage', handleStorage);
-      window.removeEventListener('auth:logout', syncAuth);
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("auth:logout", syncAuth);
     };
   }, []);
 
@@ -82,11 +82,11 @@ export function AuthProvider({ children }) {
       .then((user) => {
         if (!mounted) return;
         localStorage.setItem(USER_KEY, JSON.stringify(user));
-        dispatch({ type: 'UPDATE_USER', payload: user });
+        dispatch({ type: "UPDATE_USER", payload: user });
       })
       .catch(() => {
         persistAuth({ token: null, user: null });
-        dispatch({ type: 'LOGOUT' });
+        dispatch({ type: "LOGOUT" });
       });
 
     return () => {
@@ -98,28 +98,28 @@ export function AuthProvider({ children }) {
     () => ({
       ...state,
       isAuthenticated: Boolean(state.token && state.user),
-      isAdmin: state.user?.role === 'admin',
+      isAdmin: state.user?.role === "admin",
       async login(credentials) {
         const payload = await loginUser(credentials);
         if (!payload.token || !payload.user) {
-          throw new Error('Login response is missing token or user.');
+          throw new Error("Login response is missing token or user.");
         }
         persistAuth(payload);
-        dispatch({ type: 'LOGIN', payload });
+        dispatch({ type: "LOGIN", payload });
         return payload;
       },
       async register(payload) {
         const auth = await registerUser(payload);
         if (!auth.token || !auth.user) {
-          throw new Error('Register response is missing token or user.');
+          throw new Error("Register response is missing token or user.");
         }
         persistAuth(auth);
-        dispatch({ type: 'LOGIN', payload: auth });
+        dispatch({ type: "LOGIN", payload: auth });
         return auth;
       },
       logout() {
         persistAuth({ token: null, user: null });
-        dispatch({ type: 'LOGOUT' });
+        dispatch({ type: "LOGOUT" });
       },
     }),
     [state],
@@ -130,7 +130,6 @@ export function AuthProvider({ children }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used inside AuthProvider');
+  if (!context) throw new Error("useAuth must be used inside AuthProvider");
   return context;
 }
-

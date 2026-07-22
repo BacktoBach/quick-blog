@@ -1,59 +1,116 @@
-import { createBrowserRouter } from 'react-router-dom';
-import MainLayout from '../components/MainLayout';
-import ProtectedRoute from '../components/ProtectedRoute';
-import Home from '../pages/Home';
-import Login from '../pages/Login';
-import Register from '../pages/Register';
-import AdminDashboard from '../pages/AdminDashboard';
-import BlogDetail from '../pages/BlogDetail';
-import CreatePost from '../pages/CreatePost';
-import MyPosts from '../pages/MyPosts';
-import UserManagement from '../pages/UserManagement';
+/* eslint-disable react-refresh/only-export-components */
+import { createBrowserRouter } from "react-router-dom";
+import { lazy, Suspense } from "react";
+import MainLayout from "../components/layout/MainLayout";
+import ProtectedRoute from "../components/ProtectedRoute";
+
+const Home = lazy(() => import("../pages/Home"));
+const Login = lazy(() => import("../pages/Login"));
+const Register = lazy(() => import("../pages/Register"));
+const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
+const BlogDetail = lazy(() => import("../pages/BlogDetail"));
+const CreatePost = lazy(() => import("../pages/CreatePost"));
+const MyPosts = lazy(() => import("../pages/MyPosts"));
+const UserManagement = lazy(() => import("../pages/UserManagement"));
+
+function LazyPage({ children }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[40vh] items-center justify-center text-sm text-gray-500">
+          Loading page...
+        </div>
+      }
+    >
+      {children}
+    </Suspense>
+  );
+}
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <MainLayout />,
     children: [
-      { index: true, element: <Home /> },
-      { path: 'login', element: <Login /> },
-      { path: 'register', element: <Register /> },
-      { path: 'blog/:id', element: <BlogDetail /> },
       {
-        path: 'my-posts',
+        index: true,
+        element: (
+          <LazyPage>
+            <Home />
+          </LazyPage>
+        ),
+      },
+      {
+        path: "login",
+        element: (
+          <LazyPage>
+            <Login />
+          </LazyPage>
+        ),
+      },
+      {
+        path: "register",
+        element: (
+          <LazyPage>
+            <Register />
+          </LazyPage>
+        ),
+      },
+      {
+        path: "blog/:id",
+        element: (
+          <LazyPage>
+            <BlogDetail />
+          </LazyPage>
+        ),
+      },
+      {
+        path: "my-posts",
         element: (
           <ProtectedRoute>
-            <MyPosts />
+            <LazyPage>
+              <MyPosts />
+            </LazyPage>
           </ProtectedRoute>
         ),
       },
       {
-        path: 'posts/new',
+        path: "posts/new",
         element: (
           <ProtectedRoute>
-            <CreatePost />
+            <LazyPage>
+              <CreatePost />
+            </LazyPage>
           </ProtectedRoute>
         ),
       },
       {
-        path: 'admin',
+        path: "admin",
         element: (
-          <ProtectedRoute roles={['admin']}>
-            <AdminDashboard />
+          <ProtectedRoute roles={["admin"]}>
+            <LazyPage>
+              <AdminDashboard />
+            </LazyPage>
           </ProtectedRoute>
         ),
       },
       {
-        path: 'admin/users',
+        path: "admin/users",
         element: (
-          <ProtectedRoute roles={['admin']}>
-            <UserManagement />
+          <ProtectedRoute roles={["admin"]}>
+            <LazyPage>
+              <UserManagement />
+            </LazyPage>
           </ProtectedRoute>
         ),
       },
       {
-        path: '*',
-        element: <div className="p-10 text-center text-xl font-bold">404 - Page not found</div>,
+        path: "*",
+        element: (
+          <div className="p-10 text-center text-xl font-bold">
+            404 - Page not found
+          </div>
+        ),
       },
     ],
   },
