@@ -158,12 +158,12 @@ export default function Home() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredPosts.map((post) => (
               <article
-                key={post._id || post.id}
+                key={post.id}
                 className="flex overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
               >
                 <div className="flex w-full flex-col">
                   <Link
-                    to={`/blog/${post._id}`}
+                    to={`/blog/${post.id}`}
                     className="block aspect-[16/10] overflow-hidden bg-gray-100 dark:bg-gray-800"
                   >
                     <img
@@ -179,11 +179,11 @@ export default function Home() {
                   <div className="flex flex-1 flex-col p-5">
                     <div className="mb-3 flex items-center justify-between gap-2 text-xs text-gray-500">
                       <span className="rounded-full bg-indigo-50 px-2.5 py-1 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                        {post.category || "General"}
+                        {post.category}
                       </span>
-                      <span>{post.author || "QuickBlog"}</span>
+                      <span>{post.author}</span>
                     </div>
-                    <Link to={`/blog/${post._id}`}>
+                    <Link to={`/blog/${post.id}`}>
                       <h2 className="text-lg font-bold leading-snug text-gray-950 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">
                         {post.title}
                       </h2>
@@ -192,7 +192,7 @@ export default function Home() {
                       {stripHtml(post.content)}
                     </p>
                     <Link
-                      to={`/blog/${post._id}`}
+                      to={`/blog/${post.id}`}
                       className="mt-5 inline-flex text-sm font-semibold text-indigo-600 hover:text-indigo-500"
                     >
                       Read more

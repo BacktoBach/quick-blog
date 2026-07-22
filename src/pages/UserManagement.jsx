@@ -39,7 +39,7 @@ export default function UserManagement() {
   const handleRole = async (user) => {
     const nextRole = user.role === "admin" ? "user" : "admin";
     try {
-      await updateUserRole(user.id || user._id, nextRole);
+      await updateUserRole(user.id, nextRole);
       await loadUsers();
     } catch (err) {
       setError(err.message);
@@ -53,7 +53,7 @@ export default function UserManagement() {
     if (!ok) return;
 
     try {
-      await deleteUser(user.id || user._id);
+      await deleteUser(user.id);
       await loadUsers();
     } catch (err) {
       setError(err.message);
@@ -92,7 +92,7 @@ export default function UserManagement() {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
               {users.map((user) => (
-                <tr key={user.id || user._id}>
+                <tr key={user.id}>
                   <td className="px-5 py-4 font-semibold text-gray-950 dark:text-white">
                     {user.username}
                   </td>

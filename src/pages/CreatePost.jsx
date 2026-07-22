@@ -55,7 +55,7 @@ export default function CreatePost() {
       const coverImage = await uploadCoverImage(coverFile);
       const post = await createPost({ ...formData, coverImage });
       setCoverFile(null);
-      navigate(`/blog/${post._id || post.id}`);
+      navigate(`/blog/${post.id}`);
     } catch (err) {
       setError(err.message);
     } finally {

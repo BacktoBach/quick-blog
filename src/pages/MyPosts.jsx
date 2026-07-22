@@ -44,7 +44,7 @@ export default function MyPosts() {
     if (!ok) return;
 
     try {
-      await deletePost(post._id || post.id);
+      await deletePost(post.id);
       await loadPosts();
     } catch (err) {
       setError(err.message);
@@ -107,10 +107,10 @@ export function PostTable({ posts, onDelete }) {
           </thead>
           <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
             {posts.map((post) => (
-              <tr key={post._id}>
+              <tr key={post.id}>
                 <td className="max-w-sm px-5 py-4 font-semibold text-gray-950 dark:text-white">
                   <Link
-                    to={`/blog/${post._id}`}
+                    to={`/blog/${post.id}`}
                     className="hover:text-indigo-600"
                   >
                     {post.title}

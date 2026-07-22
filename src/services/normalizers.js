@@ -1,21 +1,27 @@
 export function normalizeUser(user) {
   if (!user) throw new Error("Authentication response did not include a user.");
+
   return {
     ...user,
-    id: user._id,
-    username: user.username,
-    role: user.role,
+    id: user.id,
   };
 }
 
 export function normalizePost(post) {
+  if (!post) throw new Error("Post response did not include a post.");
+
+  const tags = Array.isArray(post.tags) ? post.tags : [];
+  const author = post.author;
+  const authorId = typeof author === "string" ? author : author?._id;
+  const authorName = typeof author === "object" ? author?.username : undefined;
+
   return {
     ...post,
     id: post._id,
-    category: post.tags[0] || "General",
+    category: tags[0] || "General",
     coverImage: post.image,
-    authorId: post.author._id,
-    author: post.author.username,
+    authorId,
+    author: authorName || "QuickBlog",
   };
 }
 

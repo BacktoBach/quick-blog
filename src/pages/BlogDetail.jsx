@@ -60,23 +60,19 @@ export default function BlogDetail() {
 
       <header className="space-y-4">
         <span className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-          {post.category || "General"}
+          {post.category}
         </span>
         <h1 className="text-4xl font-extrabold leading-tight text-gray-950 dark:text-white">
           {post.title}
         </h1>
         <p className="text-sm text-gray-500">
-          By {post.author || "QuickBlog"} -{" "}
+          By {post.author} -{" "}
           {new Date(post.createdAt).toLocaleDateString("vi-VN")}
         </p>
       </header>
 
       <img
-        src={
-          post.coverImage ||
-          post.image ||
-          "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&auto=format&fit=crop&q=80"
-        }
+        src={post.coverImage}
         alt={post.title}
         className="aspect-[21/10] w-full rounded-lg object-cover"
       />
@@ -84,7 +80,7 @@ export default function BlogDetail() {
       <div
         className="prose max-w-none text-gray-700 dark:text-gray-300"
         dangerouslySetInnerHTML={{
-          __html: post.content || post.description || "",
+          __html: post.content,
         }}
       />
     </article>
