@@ -7,7 +7,6 @@ import ProtectedRoute from "../components/ProtectedRoute";
 const Home = lazy(() => import("../pages/Home"));
 const Login = lazy(() => import("../pages/Login"));
 const Register = lazy(() => import("../pages/Register"));
-const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
 const BlogDetail = lazy(() => import("../pages/BlogDetail"));
 const CreatePost = lazy(() => import("../pages/CreatePost"));
 const MyPosts = lazy(() => import("../pages/MyPosts"));
@@ -89,7 +88,7 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute roles={["admin"]}>
             <LazyPage>
-              <AdminDashboard />
+              <MyPosts />
             </LazyPage>
           </ProtectedRoute>
         ),

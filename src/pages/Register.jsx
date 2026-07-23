@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { register } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -20,6 +22,7 @@ export default function Register() {
 
     try {
       await register(formData);
+      showToast("Account created successfully");
       navigate("/my-posts", { replace: true });
     } catch (err) {
       setError(err.message);

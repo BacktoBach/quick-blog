@@ -22,7 +22,7 @@ export async function deleteUser(id) {
 export async function updateUserRole(id, role) {
   try {
     const { data } = await apiClient.put(`/users/${id}/role`, { role });
-    return normalizeUser(data.user);
+    return data;
   } catch (error) {
     throwApiError(error, "Could not update user role.");
   }

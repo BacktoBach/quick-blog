@@ -3,7 +3,7 @@ export function normalizeUser(user) {
 
   return {
     ...user,
-    id: user.id,
+    id: user.id ?? user._id,
   };
 }
 

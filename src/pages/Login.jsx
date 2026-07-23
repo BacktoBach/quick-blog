@@ -1,16 +1,15 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { login } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const redirectTo = location.state?.from?.pathname || "/my-posts";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -18,10 +17,9 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const { user } = await login(formData);
-      navigate(user.role === "admin" ? "/admin" : redirectTo, {
-        replace: true,
-      });
+      await login(formData);
+      showToast("Login successful");
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
