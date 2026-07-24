@@ -23,7 +23,7 @@ export default function Register() {
     try {
       await register(formData);
       showToast("Account created successfully");
-      navigate("/my-posts", { replace: true });
+      navigate("/mypost", { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {

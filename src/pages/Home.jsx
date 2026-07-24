@@ -8,10 +8,8 @@ const FALLBACK_IMAGE =
 
 function stripHtml(html = "") {
   const plainText = html.replace(/<[^>]*>/g, " ");
-  const decodedText = new DOMParser().parseFromString(
-    plainText,
-    "text/html",
-  ).body.textContent;
+  const decodedText = new DOMParser().parseFromString(plainText, "text/html")
+    .body.textContent;
 
   return decodedText?.replace(/\s+/g, " ").trim() || "";
 }
@@ -83,9 +81,8 @@ export default function Home() {
 
         <p className="mx-auto mt-6 max-w-3xl text-sm font-light leading-7 text-black dark:text-gray-300 sm:text-base">
           This is your space to think out loud, to share what matters, and try
-          to write without filters.
-
-          Whatever it's one word or a thousand, your story starts right here.
+          to write without filters. Whatever it's one word or a thousand, your
+          story starts right here.
         </p>
 
         <form
@@ -133,7 +130,7 @@ export default function Home() {
                 >
                   <div className="flex w-full flex-col">
                     <div className="group relative aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-gray-800">
-                      <Link to={`/blog/${post.id}`} className="block h-full">
+                      <Link to={`/posts/${post.id}`} className="block h-full">
                         <img
                           src={imageUrl}
                           alt={post.title}
@@ -159,7 +156,7 @@ export default function Home() {
                         </span>
                         <span>{post.author}</span>
                       </div>
-                      <Link to={`/blog/${post.id}`}>
+                      <Link to={`/posts/${post.id}`}>
                         <h2 className="mb-3 text-lg font-bold leading-snug text-gray-950 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">
                           {post.title}
                         </h2>
@@ -168,7 +165,7 @@ export default function Home() {
                         {stripHtml(post.content)}
                       </p>
                       <Link
-                        to={`/blog/${post.id}`}
+                        to={`/posts/${post.id}`}
                         className="mt-5 inline-flex text-sm font-semibold text-indigo-600 hover:text-indigo-500"
                       >
                         Read more

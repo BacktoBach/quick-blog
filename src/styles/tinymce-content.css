@@ -1,0 +1,25 @@
+html,
+body {
+  background: #ffffff;
+  color: #1e293b;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+}
+
+body.editor-dark {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+body.editor-light {
+  background: #ffffff;
+  color: #1e293b;
+}
+
+a {
+  color: #4f46e5;
+}
+
+body.editor-dark a {
+  color: #a5b4fc;
+}

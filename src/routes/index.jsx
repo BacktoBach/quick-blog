@@ -48,7 +48,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "register",
+        path: "signup",
         element: (
           <LazyPage>
             <Register />
@@ -56,7 +56,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "blog/:id",
+        path: "posts/:id",
         element: (
           <LazyPage>
             <BlogDetail />
@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "my-posts",
+        path: "mypost",
         element: (
           <ProtectedRoute>
             <LazyPage>
@@ -74,7 +74,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "posts/new",
+        path: "create",
         element: (
           <ProtectedRoute>
             <LazyPage>
@@ -84,17 +84,7 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "admin",
-        element: (
-          <ProtectedRoute roles={["admin"]}>
-            <LazyPage>
-              <MyPosts />
-            </LazyPage>
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: "admin/users",
+        path: "user-management",
         element: (
           <ProtectedRoute roles={["admin"]}>
             <LazyPage>

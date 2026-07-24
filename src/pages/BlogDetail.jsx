@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import DOMPurify from "dompurify";
 import { getPost } from "../services/postService";
 
 export default function BlogDetail() {
@@ -49,8 +50,12 @@ export default function BlogDetail() {
     );
   }
 
+  const safeContent = DOMPurify.sanitize(post.content || "", {
+    USE_PROFILES: { html: true },
+  });
+
   return (
-    <article className="mx-auto max-w-3xl space-y-8 py-8">
+    <article className="mx-auto max-w-4xl space-y-8 px-5 py-8 sm:px-8 sm:py-12">
       <Link
         to="/"
         className="text-sm font-semibold text-indigo-600 hover:text-indigo-500"
@@ -78,9 +83,9 @@ export default function BlogDetail() {
       />
 
       <div
-        className="prose max-w-none text-gray-700 dark:text-gray-300"
+        className="blog-content"
         dangerouslySetInnerHTML={{
-          __html: post.content,
+          __html: safeContent,
         }}
       />
     </article>

@@ -7,7 +7,10 @@ import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
 function stripHtml(html = "") {
-  return html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  return html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export default function MyPosts() {
@@ -71,7 +74,9 @@ export default function MyPosts() {
       <div className="relative flex flex-col items-center gap-4 text-center sm:min-h-11 sm:justify-center">
         <div>
           <h1 className="flex items-center justify-center gap-3 text-3xl font-extrabold text-gray-950 dark:text-white">
-            <span aria-hidden="true" className="text-4xl leading-none">✍️</span>
+            <span aria-hidden="true" className="text-4xl leading-none">
+              ✍️
+            </span>
             <span className="text-blue-600 dark:text-blue-400">
               {isAdmin ? "All Posts" : "My Posts"}
             </span>
@@ -113,47 +118,47 @@ export function PostTable({ posts, onDelete }) {
 
   return (
     <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <table className="min-w-[680px] w-full table-fixed text-left text-sm">
-          <thead className="bg-gray-50 text-xs uppercase text-gray-500 dark:bg-gray-800">
-            <tr>
-              <th className="w-[30%] px-5 py-3">Title</th>
-              <th className="w-[52%] px-5 py-3">Content</th>
-              <th className="px-5 py-3 text-right">Action</th>
+      <table className="min-w-[680px] w-full table-fixed text-left text-sm">
+        <thead className="bg-gray-50 text-xs uppercase text-gray-500 dark:bg-gray-800">
+          <tr>
+            <th className="w-[30%] px-5 py-3">Title</th>
+            <th className="w-[52%] px-5 py-3">Content</th>
+            <th className="px-5 py-3 text-right">Action</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+          {posts.map((post) => (
+            <tr key={post.id}>
+              <td className="px-5 py-4 font-semibold text-gray-950 dark:text-white">
+                <p className="truncate">{post.title}</p>
+              </td>
+              <td className="px-5 py-4 text-gray-500">
+                <p className="truncate">{stripHtml(post.content)}</p>
+              </td>
+              <td className="px-5 py-4 text-right">
+                <div className="flex justify-end gap-3">
+                  <Link
+                    to={`/posts/${post.id}`}
+                    aria-label={`View ${post.title}`}
+                    title="View post"
+                    className="grid h-10 w-10 place-items-center rounded-lg bg-blue-500 text-white transition hover:bg-blue-600"
+                  >
+                    <Eye className="h-5 w-5" />
+                  </Link>
+                  <button
+                    onClick={() => onDelete(post)}
+                    aria-label={`Delete ${post.title}`}
+                    title="Delete post"
+                    className="grid h-10 w-10 place-items-center rounded-lg bg-red-500 text-white transition hover:bg-red-600"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </button>
+                </div>
+              </td>
             </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {posts.map((post) => (
-              <tr key={post.id}>
-                <td className="px-5 py-4 font-semibold text-gray-950 dark:text-white">
-                  <p className="truncate">{post.title}</p>
-                </td>
-                <td className="px-5 py-4 text-gray-500">
-                  <p className="truncate">{stripHtml(post.content)}</p>
-                </td>
-                <td className="px-5 py-4 text-right">
-                  <div className="flex justify-end gap-3">
-                    <Link
-                      to={`/blog/${post.id}`}
-                      aria-label={`View ${post.title}`}
-                      title="View post"
-                      className="grid h-10 w-10 place-items-center rounded-lg bg-blue-500 text-white transition hover:bg-blue-600"
-                    >
-                      <Eye className="h-5 w-5" />
-                    </Link>
-                    <button
-                      onClick={() => onDelete(post)}
-                      aria-label={`Delete ${post.title}`}
-                      title="Delete post"
-                      className="grid h-10 w-10 place-items-center rounded-lg bg-red-500 text-white transition hover:bg-red-600"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

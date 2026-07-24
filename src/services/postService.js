@@ -36,13 +36,15 @@ export async function getPost(id) {
 export async function createPost(payload) {
   const title = payload.title.trim();
   const content = payload.content.trim();
-  const tags = (payload.tags || "")
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter(Boolean);
+  const rawTags = Array.isArray(payload.tags)
+    ? payload.tags
+    : String(payload.tags || "").split(",");
+  const tags = rawTags.map((tag) => tag.trim()).filter(Boolean);
 
-  if (!title || !content || !payload.coverImage) {
-    throw new Error("Image, title, and content are required.");
+  if (!title || !content || !payload.coverImage || !tags.length) {
+    throw new Error(
+      "Image, title, content, and at least one tag are required.",
+    );
   }
 
   try {
@@ -50,7 +52,7 @@ export async function createPost(payload) {
       title,
       content,
       image: payload.coverImage,
-      tags: tags.length ? tags : [payload.category],
+      tags,
     });
     return normalizePost(data);
   } catch (error) {

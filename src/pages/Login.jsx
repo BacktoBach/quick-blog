@@ -93,7 +93,7 @@ export default function Login() {
         <p className="mt-5 text-center text-sm text-gray-500">
           No account yet?{" "}
           <Link
-            to="/register"
+            to="/signup"
             className="font-semibold text-indigo-600 hover:text-indigo-500"
           >
             Register
