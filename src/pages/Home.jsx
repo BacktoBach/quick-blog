@@ -7,10 +7,13 @@ const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&auto=format&fit=crop&q=70";
 
 function stripHtml(html = "") {
-  return html
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  const plainText = html.replace(/<[^>]*>/g, " ");
+  const decodedText = new DOMParser().parseFromString(
+    plainText,
+    "text/html",
+  ).body.textContent;
+
+  return decodedText?.replace(/\s+/g, " ").trim() || "";
 }
 
 function SkeletonGrid() {
