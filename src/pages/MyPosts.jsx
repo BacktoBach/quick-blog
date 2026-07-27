@@ -5,13 +5,7 @@ import ConfirmDialog from "../components/ConfirmDialog";
 import { deletePost, getVisiblePosts } from "../services/postService";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
-
-function stripHtml(html = "") {
-  return html
-    .replace(/<[^>]*>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
+import { htmlToPlainText } from "../utils/html";
 
 export default function MyPosts() {
   const { isAdmin, user } = useAuth();
@@ -91,7 +85,7 @@ export default function MyPosts() {
       )}
       {loading ? (
         <div className="py-12 text-center text-gray-500">Loading posts...</div>
-      ) : (
+      ) : error ? null : (
         <PostTable posts={posts} onDelete={setPostToDelete} />
       )}
 
@@ -133,7 +127,7 @@ export function PostTable({ posts, onDelete }) {
                 <p className="truncate">{post.title}</p>
               </td>
               <td className="px-5 py-4 text-gray-500">
-                <p className="truncate">{stripHtml(post.content)}</p>
+                <p className="truncate">{htmlToPlainText(post.content)}</p>
               </td>
               <td className="px-5 py-4 text-right">
                 <div className="flex justify-end gap-3">

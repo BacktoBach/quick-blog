@@ -2,6 +2,8 @@
 
 Mini blog frontend built with React, React Router, Tailwind CSS, TinyMCE, Axios, Cloudinary upload, JWT auth, and role-based access.
 
+Live demo: https://backtobach-quick-blog.vercel.app/
+
 ## Features
 
 - Register, login, logout

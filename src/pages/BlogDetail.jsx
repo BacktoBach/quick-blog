@@ -55,24 +55,23 @@ export default function BlogDetail() {
   });
 
   return (
-    <article className="mx-auto max-w-4xl space-y-8 px-5 py-8 sm:px-8 sm:py-12">
-      <Link
-        to="/"
-        className="text-sm font-semibold text-indigo-600 hover:text-indigo-500"
-      >
-        Back home
-      </Link>
-
+    <article className="mx-auto max-w-4xl space-y-8 px-5 py-10 sm:px-8 sm:py-14">
       <header className="space-y-4">
-        <span className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-          {post.category}
-        </span>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Published on{" "}
+          <time dateTime={post.createdAt}>
+            {new Date(post.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </time>
+        </p>
         <h1 className="text-4xl font-extrabold leading-tight text-gray-950 dark:text-white">
           {post.title}
         </h1>
-        <p className="text-sm text-gray-500">
-          By {post.author} -{" "}
-          {new Date(post.createdAt).toLocaleDateString("vi-VN")}
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          {post.author}
         </p>
       </header>
 

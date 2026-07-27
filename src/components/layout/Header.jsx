@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ClipboardList,
@@ -19,7 +19,33 @@ export default function Header() {
   const { isAuthenticated, isAdmin, logout } = useAuth();
   const { showToast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isMenuOpen) return undefined;
+
+    const closeMenu = (event) => {
+      if (event.key === "Escape") {
+        setIsMenuOpen(false);
+        return;
+      }
+
+      if (
+        event.type === "pointerdown" &&
+        !menuRef.current?.contains(event.target)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", closeMenu);
+    document.addEventListener("pointerdown", closeMenu);
+    return () => {
+      document.removeEventListener("keydown", closeMenu);
+      document.removeEventListener("pointerdown", closeMenu);
+    };
+  }, [isMenuOpen]);
 
   const handleLogout = () => {
     setIsMenuOpen(false);
@@ -63,7 +89,7 @@ export default function Header() {
           </button>
 
           {isAuthenticated ? (
-            <div className="relative">
+            <div ref={menuRef} className="relative">
               <button
                 type="button"
                 onClick={() => setIsMenuOpen((open) => !open)}

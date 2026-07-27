@@ -2,27 +2,20 @@ import { useEffect, useMemo, useState } from "react";
 import { ScanSearch } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getPosts } from "../services/postService";
+import { htmlToPlainText } from "../utils/html";
 
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=900&auto=format&fit=crop&q=70";
 
-function stripHtml(html = "") {
-  const plainText = html.replace(/<[^>]*>/g, " ");
-  const decodedText = new DOMParser().parseFromString(plainText, "text/html")
-    .body.textContent;
-
-  return decodedText?.replace(/\s+/g, " ").trim() || "";
-}
-
 function SkeletonGrid() {
   return (
-    <div className="mx-auto grid max-w-[18rem] gap-6 sm:max-w-none sm:grid-cols-2 lg:grid-cols-3 xl:max-w-6xl xl:grid-cols-4">
+    <div className="grid place-items-center gap-6 sm:grid-cols-2 sm:place-items-stretch lg:grid-cols-4">
       {Array.from({ length: 8 }).map((_, index) => (
         <div
           key={index}
-          className="overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900"
+          className="w-full max-w-xs overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:max-w-none"
         >
-          <div className="aspect-[16/9] animate-pulse bg-gray-200 dark:bg-gray-800" />
+          <div className="aspect-[4/2.7] animate-pulse bg-gray-200 dark:bg-gray-800" />
           <div className="space-y-3 p-4 sm:p-5">
             <div className="h-3 w-24 animate-pulse rounded bg-gray-200 dark:bg-gray-800" />
             <div className="h-5 w-full animate-pulse rounded bg-gray-200 dark:bg-gray-800" />
@@ -79,9 +72,9 @@ export default function Home() {
           platform.
         </h1>
 
-        <p className="mx-auto mt-6 max-w-3xl text-sm font-light leading-7 text-black dark:text-gray-300 sm:text-base">
-          This is your space to think out loud, to share what matters, and try
-          to write without filters. Whatever it's one word or a thousand, your
+        <p className="mx-auto mt-6 max-w-3xl text-sm font-light leading-7 text-slate-500 dark:text-gray-300 sm:text-base">
+          This is your space to think out loud, to share what matters, and to
+          write without filters. Whether it&apos;s one word or a thousand, your
           story starts right here.
         </p>
 
@@ -114,65 +107,57 @@ export default function Home() {
       <div className="mt-9 sm:mt-12">
         {loading ? (
           <SkeletonGrid />
-        ) : filteredPosts.length === 0 ? (
+        ) : error ? null : filteredPosts.length === 0 ? (
           <div className="py-16 text-center text-gray-500">
             No matching posts found.
           </div>
         ) : (
-          <div className="mx-auto grid max-w-[18rem] gap-6 sm:max-w-none sm:grid-cols-2 lg:grid-cols-3 xl:max-w-6xl xl:grid-cols-4">
+          <div className="grid place-items-center gap-6 sm:grid-cols-2 sm:place-items-stretch lg:grid-cols-4">
             {filteredPosts.map((post) => {
               const imageUrl = post.coverImage || FALLBACK_IMAGE;
 
               return (
-                <article
-                  key={post.id}
-                  className="flex overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
-                >
-                  <div className="flex w-full flex-col">
-                    <div className="group relative aspect-[16/9] overflow-hidden bg-gray-100 dark:bg-gray-800">
-                      <Link to={`/posts/${post.id}`} className="block h-full">
-                        <img
-                          src={imageUrl}
-                          alt={post.title}
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                      </Link>
-                      <a
-                        href={`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(imageUrl)}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`Search image from ${post.title} with Google Lens`}
-                        title="Search with Google Lens"
-                        className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-blue-600 opacity-0 shadow-md transition hover:scale-105 group-hover:opacity-100 focus:opacity-100"
-                      >
-                        <ScanSearch size={21} aria-hidden="true" />
-                      </a>
-                    </div>
-                    <div className="flex flex-1 flex-col p-4 sm:p-5">
-                      <div className="mb-4 flex items-center justify-between gap-2 text-xs text-gray-500">
-                        <span className="rounded-full bg-indigo-50 px-2.5 py-1 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                          {post.category}
-                        </span>
-                        <span>{post.author}</span>
+                <div key={post.id} className="w-full max-w-xs sm:max-w-none">
+                  <article className="flex h-full overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+                    <div className="flex w-full flex-col">
+                      <div className="group relative aspect-[4/2.7] overflow-hidden bg-gray-100 dark:bg-gray-800">
+                        <Link to={`/posts/${post.id}`} className="block h-full">
+                          <img
+                            src={imageUrl}
+                            alt={post.title}
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                        </Link>
+                        <a
+                          href={`https://lens.google.com/uploadbyurl?url=${encodeURIComponent(imageUrl)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`Search image from ${post.title} with Google Lens`}
+                          title="Search with Google Lens"
+                          className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-white text-blue-600 opacity-0 shadow-md transition hover:scale-105 group-hover:opacity-100 focus:opacity-100"
+                        >
+                          <ScanSearch size={21} aria-hidden="true" />
+                        </a>
                       </div>
-                      <Link to={`/posts/${post.id}`}>
-                        <h2 className="mb-3 text-lg font-bold leading-snug text-gray-950 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">
-                          {post.title}
-                        </h2>
-                      </Link>
-                      <p className="line-clamp-3 text-sm text-gray-500 dark:text-gray-400">
-                        {stripHtml(post.content)}
-                      </p>
-                      <Link
-                        to={`/posts/${post.id}`}
-                        className="mt-5 inline-flex text-sm font-semibold text-indigo-600 hover:text-indigo-500"
-                      >
-                        Read more
-                      </Link>
+                      <div className="flex flex-1 flex-col p-4 sm:p-5">
+                        <div className="mb-4 flex items-center text-xs text-gray-500">
+                          <span className="rounded-full bg-indigo-50 px-2.5 py-1 font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                            {post.category}
+                          </span>
+                        </div>
+                        <Link to={`/posts/${post.id}`}>
+                          <h2 className="mb-3 text-lg font-bold leading-snug text-gray-950 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400">
+                            {post.title}
+                          </h2>
+                        </Link>
+                        <p className="line-clamp-3 text-sm text-gray-500 dark:text-gray-400">
+                          {htmlToPlainText(post.content)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </article>
+                  </article>
+                </div>
               );
             })}
           </div>

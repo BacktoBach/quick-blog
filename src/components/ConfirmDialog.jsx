@@ -1,4 +1,5 @@
 import { AlertTriangle, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 export default function ConfirmDialog({
   open,
@@ -9,6 +10,25 @@ export default function ConfirmDialog({
   onClose,
   onConfirm,
 }) {
+  const cancelButtonRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+
+    cancelButtonRef.current?.focus();
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape" && !loading) onCloseRef.current();
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [loading, open]);
+
   if (!open) return null;
 
   return (
@@ -25,13 +45,19 @@ export default function ConfirmDialog({
               <AlertTriangle className="h-5 w-5" />
             </span>
             <div>
-              <h2 id="confirm-dialog-title" className="text-xl font-bold text-slate-950 dark:text-white">
+              <h2
+                id="confirm-dialog-title"
+                className="text-xl font-bold text-slate-950 dark:text-white"
+              >
                 {title}
               </h2>
-              <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">{message}</p>
+              <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                {message}
+              </p>
             </div>
           </div>
           <button
+            ref={cancelButtonRef}
             type="button"
             onClick={onClose}
             disabled={loading}

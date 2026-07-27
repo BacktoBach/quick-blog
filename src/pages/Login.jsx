@@ -57,7 +57,7 @@ export default function Login() {
             required
             autoComplete="email"
             className="h-11 w-full rounded-lg border border-slate-200 bg-indigo-50 px-4 text-sm text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 sm:h-12 sm:text-base"
-            placeholder="Email"
+            placeholder="Enter your email"
           />
         </label>
 
@@ -75,7 +75,7 @@ export default function Login() {
             required
             autoComplete="current-password"
             className="h-11 w-full rounded-lg border border-slate-200 bg-indigo-50 px-4 text-sm text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 sm:h-12 sm:text-base"
-            placeholder="Password"
+            placeholder="Enter your password"
           />
         </label>
 

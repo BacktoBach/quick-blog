@@ -50,6 +50,7 @@ export default function CreatePost() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
   const allowNavigationRef = useRef(false);
+  const editorRef = useRef(null);
   const navigate = useNavigate();
   const { isDark } = useTheme();
 
@@ -134,6 +135,14 @@ export default function CreatePost() {
       if (preview) URL.revokeObjectURL(preview);
     };
   }, [preview]);
+
+  useEffect(() => {
+    const editorBody = editorRef.current?.getBody();
+    if (!editorBody) return;
+
+    editorBody.classList.toggle("editor-dark", isDark);
+    editorBody.classList.toggle("editor-light", !isDark);
+  }, [isDark]);
 
   const handleAddTag = () => {
     const tag = tagInput.trim();
@@ -280,8 +289,13 @@ export default function CreatePost() {
           </p>
           <div className="mt-3 overflow-hidden rounded-lg border border-slate-300 bg-white [&_.tox-tinymce]:!h-[360px] dark:border-slate-700 sm:[&_.tox-tinymce]:!h-[460px]">
             <Editor
-              key={isDark ? "editor-dark" : "editor-light"}
               value={formData.content}
+              onInit={(_event, editor) => {
+                editorRef.current = editor;
+                const editorBody = editor.getBody();
+                editorBody.classList.toggle("editor-dark", isDark);
+                editorBody.classList.toggle("editor-light", !isDark);
+              }}
               onEditorChange={(content) => {
                 setFormData((current) => ({ ...current, content }));
                 clearFieldError("content");

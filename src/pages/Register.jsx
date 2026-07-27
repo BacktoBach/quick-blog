@@ -24,7 +24,7 @@ export default function Register() {
     try {
       await register(formData);
       showToast("Account created successfully");
-      navigate("/mypost", { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -51,13 +51,13 @@ export default function Register() {
 
       <form className="space-y-3.5 sm:space-y-4" onSubmit={handleSubmit}>
         {[
-          ["email", "Email", "email", "Email", "email"],
-          ["username", "Username", "text", "Username", "username"],
+          ["email", "Email", "email", "Enter your email", "email"],
+          ["username", "Username", "text", "Enter your username", "username"],
           [
             "password",
             "Password",
             "password",
-            "Password (at least 6 characters)",
+            "Enter your password",
             "new-password",
           ],
         ].map(([name, label, type, placeholder, autoComplete]) => (
@@ -87,7 +87,7 @@ export default function Register() {
           disabled={loading}
           className="h-11 w-full rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:h-12 sm:text-base"
         >
-          {loading ? "Creating..." : "Signup"}
+          {loading ? "Creating..." : "Sign Up"}
         </button>
       </form>
 

@@ -3,8 +3,22 @@ import { normalizeUser, unwrapItems } from "./normalizers";
 
 export async function getUsers() {
   try {
-    const response = await apiClient.get("/users");
-    return unwrapItems(response).map(normalizeUser);
+    const firstResponse = await apiClient.get("/users", {
+      params: { page: 1 },
+    });
+    const users = unwrapItems(firstResponse);
+    const totalPages = Number(firstResponse.data.totalPages) || 1;
+
+    if (totalPages > 1) {
+      const responses = await Promise.all(
+        Array.from({ length: totalPages - 1 }, (_, index) =>
+          apiClient.get("/users", { params: { page: index + 2 } }),
+        ),
+      );
+      users.push(...responses.flatMap(unwrapItems));
+    }
+
+    return users.map(normalizeUser);
   } catch (error) {
     throwApiError(error, "Could not load users.");
   }

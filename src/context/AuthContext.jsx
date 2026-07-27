@@ -1,6 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useMemo, useReducer } from "react";
-import { getCurrentUser, loginUser, registerUser } from "../services/authService";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+} from "react";
+import {
+  getCurrentUser,
+  loginUser,
+  registerUser,
+} from "../services/authService";
 
 const AuthContext = createContext(null);
 
@@ -19,18 +29,23 @@ function readStoredUser() {
 const initialState = {
   token: localStorage.getItem(TOKEN_KEY),
   user: readStoredUser(),
+  isInitializing: Boolean(localStorage.getItem(TOKEN_KEY)),
 };
 
 function reducer(state, action) {
   switch (action.type) {
     case "LOGIN":
-      return { token: action.payload.token, user: action.payload.user };
+      return {
+        token: action.payload.token,
+        user: action.payload.user,
+        isInitializing: false,
+      };
     case "LOGOUT":
-      return { token: null, user: null };
+      return { token: null, user: null, isInitializing: false };
     case "SYNC":
       return action.payload;
     case "UPDATE_USER":
-      return { ...state, user: action.payload };
+      return { ...state, user: action.payload, isInitializing: false };
     default:
       return state;
   }
@@ -52,11 +67,13 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const syncAuth = () => {
+      const token = localStorage.getItem(TOKEN_KEY);
       dispatch({
         type: "SYNC",
         payload: {
-          token: localStorage.getItem(TOKEN_KEY),
+          token,
           user: readStoredUser(),
+          isInitializing: false,
         },
       });
     };
@@ -75,8 +92,12 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     let mounted = true;
+    const token = localStorage.getItem(TOKEN_KEY);
 
-    if (!state.token || state.user) return undefined;
+    if (!token) {
+      dispatch({ type: "LOGOUT" });
+      return undefined;
+    }
 
     getCurrentUser()
       .then((user) => {
@@ -92,13 +113,15 @@ export function AuthProvider({ children }) {
     return () => {
       mounted = false;
     };
-  }, [state.token, state.user]);
+  }, []);
 
   const value = useMemo(
     () => ({
       ...state,
-      isAuthenticated: Boolean(state.token && state.user),
-      isAdmin: state.user?.role === "admin",
+      isAuthenticated: Boolean(
+        !state.isInitializing && state.token && state.user,
+      ),
+      isAdmin: !state.isInitializing && state.user?.role === "admin",
       async login(credentials) {
         const payload = await loginUser(credentials);
         if (!payload.token || !payload.user) {
