@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../assets/logoimg.png";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
@@ -28,78 +29,74 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center px-4">
-      <section className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-extrabold text-gray-950 dark:text-white">
-            Welcome back
-          </h1>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Login with your QuickBlog account.
-          </p>
+    <section className="mx-auto w-full max-w-md rounded-xl bg-white p-5 shadow-2xl sm:p-8">
+      <div className="mb-6 flex justify-center sm:mb-8">
+        <Link to="/" aria-label="QuickBlog home">
+          <img src={logo} alt="QuickBlog" className="h-14 w-auto sm:h-16" />
+        </Link>
+      </div>
+
+      {error && (
+        <div
+          className="mb-5 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600"
+          role="alert"
+        >
+          {error}
         </div>
+      )}
 
-        {error && (
-          <div className="mb-5 rounded-lg bg-red-50 p-3 text-sm font-medium text-red-600 dark:bg-red-950/30 dark:text-red-400">
-            {error}
-          </div>
-        )}
+      <form className="space-y-3.5 sm:space-y-4" onSubmit={handleSubmit}>
+        <label className="block">
+          <span className="sr-only">Email</span>
+          <input
+            type="email"
+            value={formData.email}
+            onChange={(event) =>
+              setFormData((prev) => ({ ...prev, email: event.target.value }))
+            }
+            required
+            autoComplete="email"
+            className="h-11 w-full rounded-lg border border-slate-200 bg-indigo-50 px-4 text-sm text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 sm:h-12 sm:text-base"
+            placeholder="Email"
+          />
+        </label>
 
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Email
-            </span>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, email: event.target.value }))
-              }
-              required
-              className="mt-1 w-full rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-800"
-              placeholder="you@example.com"
-            />
-          </label>
+        <label className="block">
+          <span className="sr-only">Password</span>
+          <input
+            type="password"
+            value={formData.password}
+            onChange={(event) =>
+              setFormData((prev) => ({
+                ...prev,
+                password: event.target.value,
+              }))
+            }
+            required
+            autoComplete="current-password"
+            className="h-11 w-full rounded-lg border border-slate-200 bg-indigo-50 px-4 text-sm text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 sm:h-12 sm:text-base"
+            placeholder="Password"
+          />
+        </label>
 
-          <label className="block">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              Password
-            </span>
-            <input
-              type="password"
-              value={formData.password}
-              onChange={(event) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  password: event.target.value,
-                }))
-              }
-              required
-              className="mt-1 w-full rounded-lg border border-gray-200 bg-transparent px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-800"
-              placeholder="Your password"
-            />
-          </label>
+        <button
+          type="submit"
+          disabled={loading}
+          className="h-11 w-full rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:h-12 sm:text-base"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-60"
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
-
-        <p className="mt-5 text-center text-sm text-gray-500">
-          No account yet?{" "}
-          <Link
-            to="/signup"
-            className="font-semibold text-indigo-600 hover:text-indigo-500"
-          >
-            Register
-          </Link>
-        </p>
-      </section>
-    </div>
+      <p className="mt-6 text-center text-sm text-slate-600 sm:mt-8">
+        Don&apos;t have an account?{" "}
+        <Link
+          to="/signup"
+          className="font-semibold text-indigo-600 transition hover:text-indigo-500"
+        >
+          Signup
+        </Link>
+      </p>
+    </section>
   );
 }

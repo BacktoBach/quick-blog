@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createBrowserRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import AuthLayout from "../components/layout/AuthLayout";
 import MainLayout from "../components/layout/MainLayout";
 import ProtectedRoute from "../components/ProtectedRoute";
 
@@ -28,6 +29,27 @@ function LazyPage({ children }) {
 
 export const router = createBrowserRouter([
   {
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/login",
+        element: (
+          <LazyPage>
+            <Login />
+          </LazyPage>
+        ),
+      },
+      {
+        path: "/signup",
+        element: (
+          <LazyPage>
+            <Register />
+          </LazyPage>
+        ),
+      },
+    ],
+  },
+  {
     path: "/",
     element: <MainLayout />,
     children: [
@@ -36,22 +58,6 @@ export const router = createBrowserRouter([
         element: (
           <LazyPage>
             <Home />
-          </LazyPage>
-        ),
-      },
-      {
-        path: "login",
-        element: (
-          <LazyPage>
-            <Login />
-          </LazyPage>
-        ),
-      },
-      {
-        path: "signup",
-        element: (
-          <LazyPage>
-            <Register />
           </LazyPage>
         ),
       },
